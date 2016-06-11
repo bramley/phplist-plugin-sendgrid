@@ -1,0 +1,21 @@
+.php_cs.cache
+README.html
+
+## Composer ##
+plugins/SendGridPlugin/vendor/guzzle/guzzle/*
+!plugins/SendGridPlugin/vendor/guzzle/guzzle/src/
+!plugins/SendGridPlugin/vendor/guzzle/guzzle/LICENSE
+
+plugins/SendGridPlugin/vendor/sendgrid/sendgrid/*
+!plugins/SendGridPlugin/vendor/sendgrid/sendgrid/lib/
+!plugins/SendGridPlugin/vendor/sendgrid/sendgrid/MIT.LICENSE
+
+plugins/SendGridPlugin/vendor/symfony/event-dispatcher/*
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/ContainerAwareEventDispatcher.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/Event.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/EventDispatcher.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/EventDispatcherInterface.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/EventSubscriberInterface.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/GenericEvent.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/ImmutableEventDispatcher.php
+!plugins/SendGridPlugin/vendor/symfony/event-dispatcher/LICENSE
