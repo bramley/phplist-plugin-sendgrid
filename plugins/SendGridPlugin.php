@@ -26,7 +26,7 @@
 class SendGridPlugin extends phplistPlugin
 {
     /** @var SendGrid connector instance */
-    private $sendgrid;
+    private $connector;
 
     /*
      *  Inherited variables
@@ -45,35 +45,6 @@ class SendGridPlugin extends phplistPlugin
     );
 
     /**
-     * Remove temporary files created for attachments.
-     * 
-     * @param array $temporaryFiles files to be removed
-     */
-    private function removeTemporaryFiles($temporaryFiles)
-    {
-        foreach ($temporaryFiles as $item) {
-            unlink($item);
-        }
-    }
-
-    /**
-     * Create a temporary file for attachments.
-     * 
-     * @param string $content file content
-     *
-     * @return string the temporary file name
-     */
-    private function createTemporaryFile($content)
-    {
-        global $tmp;
-
-        $tempName = tempnam($tmp, 'phplist');
-        file_put_contents($tempName, $content);
-
-        return $tempName;
-    }
-
-    /**
      * Constructor.
      */
     public function __construct()
@@ -83,28 +54,39 @@ class SendGridPlugin extends phplistPlugin
     }
 
     /**
-     * Send an email using SendGrid.
+     * Provide the dependencies for enabling this plugin.
      *
+     * @return array
+     */
+    public function dependencyCheck()
+    {
+        return array(
+            'PHP version 5.4.0 or greater' => version_compare(PHP_VERSION, '5.4') > 0,
+            'curl extension installed' => extension_loaded('curl'),
+        );
+    }
+    /**
+     * Send an email using the SendGrid API.
+     *
+     * @see https://sendgrid.com/docs/API_Reference/Web_API/mail.html
+     * 
      * @param PHPlistMailer $phpmailer mailer instance
      *
-     * @return bool Whether the response code is 200
+     * @return bool success/failure
      */
     public function send(PHPlistMailer $phpmailer)
     {
-        if ($this->sendgrid === null) {
-            $this->sendgrid = new SendGrid(
-                getConfig('sendgrid_api_key'),
-                array('raise_exceptions' => false)
-            );
+        if ($this->connector === null) {
+            require $this->coderoot . 'Connector.php';
+            $this->connector = new phpList\plugin\SendGridPlugin\Connector(getConfig('sendgrid_api_key'));
         }
-        $email = new SendGrid\Email();
         $to = $phpmailer->getToAddresses();
-        $email
-            ->addTo($to[0][0])
-            ->setFrom($phpmailer->From)
-            ->setFromName($phpmailer->FromName)
-            ->setSubject($phpmailer->Subject)
-        ;
+        $postData = array(
+            'to' => $to[0][0],
+            'from' => $phpmailer->From,
+            'fromname' => $phpmailer->FromName,
+            'subject' => $phpmailer->Subject,
+        );
         /*
          * for an html message both Body and AltBody will be populated
          * for a plain text message only Body will be populated
@@ -112,28 +94,40 @@ class SendGridPlugin extends phplistPlugin
         $isHtml = $phpmailer->AltBody != '';
 
         if ($isHtml) {
-            $email
-                ->setHtml($phpmailer->Body)
-                ->setText($phpmailer->AltBody)
-            ;
+            $postData['html'] = $phpmailer->Body;
+            $postData['text'] = $phpmailer->AltBody;
         } else {
-            $email->setText($phpmailer->Body);
+            $postData['text'] = $phpmailer->Body;
         }
 
+        $headers = array();
+
         foreach ($phpmailer->getCustomHeaders() as $item) {
-            $email->addheader($item[0], $item[1]);
-        };
-        $temporaryFiles = array();
+            $headers[$item[0]] = $item[1];
+        }
+
+        if (count($headers) > 0) {
+            $postData['headers'] = json_encode($headers);
+        }
 
         foreach ($phpmailer->getAttachments() as $item) {
-            $tempName = $this->createTemporaryFile($item[0]);
-            $temporaryFiles[] = $tempName;
-            $email->addAttachment($tempName, $item[2]);
-        };
+            list($content, $filename, $name, $encoding, $type, $isString, $disposition, $cid) = $item;
+            $key = sprintf('files[%s]', $name);
+            $postData[$key] = $content;
 
-        $response = $this->sendgrid->send($email);
-        $this->removeTemporaryFiles($temporaryFiles);
+            if ($disposition == 'inline') {
+                $key = sprintf('content[%s]', $name);
+                $postData[$key] = $cid;
+            }
+        }
+        $result = $this->connector->makeApiCall('mail.send', $postData);
 
-        return $response->getCode() == 200;
+        if ($result['message'] === 'success') {
+            return true;
+        }
+        $error = implode(', ', $result['errors']);
+        echo "send failed: $error";
+
+        return false;
     }
 }

@@ -1,9 +1,0 @@
-{
-    "config": {
-        "vendor-dir": "plugins/SendGridPlugin/vendor",
-        "prepend-autoloader": false
-    },
-    "require": {
-        "sendgrid/sendgrid": "~4.0"
-    }
-}
