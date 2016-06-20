@@ -25,6 +25,8 @@
  */
 class SendGridPlugin extends phplistPlugin
 {
+    const VERSION_FILE = 'version.txt';
+
     /** @var SendGrid connector instance */
     private $connector;
 
@@ -34,6 +36,7 @@ class SendGridPlugin extends phplistPlugin
     public $name = 'SendGrid Plugin';
     public $authors = 'Duncan Cameron';
     public $description = 'Use SendGrid to send emails';
+    public $documentationUrl = 'https://resources.phplist.com/plugin/sendgrid';
     public $settings = array(
         'sendgrid_api_key' => array(
             'value' => '',
@@ -51,6 +54,9 @@ class SendGridPlugin extends phplistPlugin
     {
         $this->coderoot = dirname(__FILE__) . '/' . 'SendGridPlugin' . '/';
         parent::__construct();
+        $this->version = (is_file($f = $this->coderoot . self::VERSION_FILE))
+            ? file_get_contents($f)
+            : '';
     }
 
     /**
