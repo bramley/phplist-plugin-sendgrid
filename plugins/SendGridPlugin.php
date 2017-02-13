@@ -1,7 +1,7 @@
 <?php
 /**
  * SendGridPlugin plugin for phplist.
- * 
+ *
  * This file is a part of SendGridPlugin Plugin.
  *
  * This plugin is free software: you can redistribute it and/or modify
@@ -12,18 +12,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * @category  phplist
- * 
+ *
  * @author    Duncan Cameron
- * @copyright 2016 Duncan Cameron
+ * @copyright 2016-2017 Duncan Cameron
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License, Version 3
  */
 
 /**
  * Registers the plugin with phplist.
  */
-
 if (!interface_exists('EmailSender')) {
     return;
 }
@@ -75,15 +74,16 @@ class SendGridPlugin extends phplistPlugin implements EmailSender
         return array(
             'PHP version 5.4.0 or greater' => version_compare(PHP_VERSION, '5.4') > 0,
             'phpList version 3.3.0 or greater' => version_compare(getConfig('version'), '3.3') > 0,
-            "No other plugin to send emails can be enabled" => empty($emailsenderplugin) || get_class($emailsenderplugin) == __CLASS__,
+            'No other plugin to send emails can be enabled' => empty($emailsenderplugin) || get_class($emailsenderplugin) == __CLASS__,
             'curl extension installed' => extension_loaded('curl'),
         );
     }
+
     /**
      * Send an email using the SendGrid API.
      *
      * @see https://sendgrid.com/docs/API_Reference/Web_API/mail.html
-     * 
+     *
      * @param PHPlistMailer $phpmailer mailer instance
      * @param string        $headers   the message http headers
      * @param string        $body      the message body

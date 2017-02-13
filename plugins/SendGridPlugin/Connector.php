@@ -1,7 +1,7 @@
 <?php
 /**
  * SendGridPlugin plugin for phplist.
- * 
+ *
  * This file is a part of SendGridPlugin Plugin.
  *
  * This plugin is free software: you can redistribute it and/or modify
@@ -12,13 +12,14 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * @category  phplist
- * 
+ *
  * @author    Duncan Cameron
- * @copyright 2016 Duncan Cameron
+ * @copyright 2016-2017 Duncan Cameron
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License, Version 3
  */
+
 namespace phpList\plugin\SendGridPlugin;
 
 class Connector
@@ -29,13 +30,13 @@ class Connector
     /** @var bool enable ssl cert verification */
     private $sslVerify;
 
-    /** @var int request timeout period*/
+    /** @var int request timeout period */
     private $timeout;
 
     /** @var string user agent */
     const USER_AGENT = 'phplist';
 
-    /**@var string sendgrid endpoint */
+    /** @var string sendgrid endpoint */
     const SG_ENDPOINT = 'https://api.sendgrid.com/api/';
 
     /**
@@ -54,10 +55,10 @@ class Connector
 
     /**
      * Make an API call using curl.
-     * 
+     *
      * @param string $action   the API module.action
      * @param array  $postData the content of the post
-     * @param string $method   the http method to be used 
+     * @param string $method   the http method to be used
      *
      * @return array the API return structure
      */

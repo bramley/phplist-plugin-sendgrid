@@ -1,2 +1,8 @@
+version 1.1.0+20170213
+      Set plugin version and documentation url
+      Implement EmailSender interface
+      Rename cs config file
+      Coding standards changes
+
 version 1.0.0+20160615
       initial release
