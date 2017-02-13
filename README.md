@@ -53,5 +53,5 @@ This plugin is free but if you install and find it useful then a donation to sup
 ## Version history ##
 
     version     Description
-    1.1.0+20170213  Integrate with phplist 3.0.0 to send emails
+    1.1.0+20170213  Integrate with phplist 3.3.0 to send emails
     1.0.0+20160615  Initial release
