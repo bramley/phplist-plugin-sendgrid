@@ -23,7 +23,11 @@
 /**
  * Registers the plugin with phplist.
  */
-class SendGridPlugin extends phplistPlugin
+
+if (!interface_exists('EmailSender')) {
+    return;
+}
+class SendGridPlugin extends phplistPlugin implements EmailSender
 {
     const VERSION_FILE = 'version.txt';
 
@@ -66,8 +70,12 @@ class SendGridPlugin extends phplistPlugin
      */
     public function dependencyCheck()
     {
+        global $emailsenderplugin;
+
         return array(
             'PHP version 5.4.0 or greater' => version_compare(PHP_VERSION, '5.4') > 0,
+            'phpList version 3.3.0 or greater' => version_compare(getConfig('version'), '3.3') > 0,
+            "No other plugin to send emails can be enabled" => empty($emailsenderplugin) || get_class($emailsenderplugin) == __CLASS__,
             'curl extension installed' => extension_loaded('curl'),
         );
     }
@@ -77,10 +85,12 @@ class SendGridPlugin extends phplistPlugin
      * @see https://sendgrid.com/docs/API_Reference/Web_API/mail.html
      * 
      * @param PHPlistMailer $phpmailer mailer instance
+     * @param string        $headers   the message http headers
+     * @param string        $body      the message body
      *
      * @return bool success/failure
      */
-    public function send(PHPlistMailer $phpmailer)
+    public function send(PHPlistMailer $phpmailer, $headers, $body)
     {
         if ($this->connector === null) {
             require $this->coderoot . 'Connector.php';

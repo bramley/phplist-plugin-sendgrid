@@ -8,7 +8,7 @@ This plugin sends emails through SendGrid using their API.
 
 ### Dependencies ###
 
-This plugin is for phplist 3 and requires php version 5.4 or later.
+This plugin is for phplist 3.3.0 or later and requires php version 5.4 or later.
 
 It also requires the php curl extension to be installed.
 
@@ -39,12 +39,6 @@ This should contain
 ##Usage##
 
 For guidance on using the plugin see the plugin's page within the phplist documentation site <https://resources.phplist.com/plugin/sendgrid>
-
-## Changes required to phplist files ##
-
-phplist does not currently support using a plugin to send emails,
-therefore one phplist file needs to be modified in order to use the plugin.
-The necessary code change is described on the plugin's documentation page.
 
 ## Support ##
 
