@@ -1,3 +1,7 @@
+version 1.2.0+20181130
+      Correct phplist version
+      Use the phpList\plugin\Common\MailSender class to send emails
+
 version 1.1.0+20170213
       Set plugin version and documentation url
       Implement EmailSender interface

@@ -10,7 +10,7 @@ This plugin sends emails through SendGrid using their API.
 
 This plugin is for phplist 3.3.0 or later and requires php version 5.4 or later.
 
-It also requires the php curl extension to be installed.
+It also requires CommonPlugin version 3.9.4 or later and the php curl extension to be installed.
 
 ### Set the plugin directory ###
 The default plugin directory is `plugins` within the admin directory.
@@ -53,5 +53,6 @@ This plugin is free but if you install and find it useful then a donation to sup
 ## Version history ##
 
     version     Description
+    1.2.0+20181130  Use the phpList\plugin\Common\MailSender class to send emails
     1.1.0+20170213  Integrate with phplist 3.3.0 to send emails
     1.0.0+20160615  Initial release
