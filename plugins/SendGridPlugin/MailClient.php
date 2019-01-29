@@ -22,6 +22,11 @@
 
 namespace phpList\plugin\SendGridPlugin;
 
+/**
+ * This class implements the IMailClient interface to send emails through SendGrid.
+ *
+ * @see https://sendgrid.com/docs/API_Reference/api_v3.html
+ */
 class MailClient implements \phpList\plugin\Common\IMailClient
 {
     /** @var string API key */
@@ -30,9 +35,7 @@ class MailClient implements \phpList\plugin\Common\IMailClient
     /**
      * Constructor.
      *
-     * @param string $apiKey    the API key to use
-     * @param bool   $sslVerify set false to disable CURL ssl cert verification
-     * @param int    $timeout   timeout period
+     * @param string $apiKey the API key to use
      */
     public function __construct($apiKey)
     {
@@ -42,12 +45,16 @@ class MailClient implements \phpList\plugin\Common\IMailClient
     public function requestBody(\PHPlistMailer $phplistmailer, $headers, $body)
     {
         $to = $phplistmailer->getToAddresses();
-        $request = array(
-            'to' => $to[0][0],
-            'from' => $phplistmailer->From,
-            'fromname' => $phplistmailer->FromName,
+        $request['personalizations'][0] = [
+            'to' => [
+                ['email' => $to[0][0]],
+            ],
             'subject' => $phplistmailer->Subject,
-        );
+        ];
+        $request['from'] = [
+            'email' => $phplistmailer->From,
+            'name' => $phplistmailer->FromName,
+        ];
         /*
          * for an html message both Body and AltBody will be populated
          * for a plain text message only Body will be populated
@@ -55,51 +62,57 @@ class MailClient implements \phpList\plugin\Common\IMailClient
         $isHtml = $phplistmailer->AltBody != '';
 
         if ($isHtml) {
-            $request['html'] = $phplistmailer->Body;
-            $request['text'] = $phplistmailer->AltBody;
+            $request['content'][0] = [
+                'type' => 'text/plain',
+                'value' => $phplistmailer->AltBody,
+            ];
+            $request['content'][1] = [
+                'type' => 'text/html',
+                'value' => $phplistmailer->Body,
+            ];
         } else {
-            $request['text'] = $phplistmailer->Body;
+            $request['content'][0] = [
+                'type' => 'text/plain',
+                'value' => $phplistmailer->Body,
+            ];
         }
-        $customHeaders = array();
 
         foreach ($phplistmailer->getCustomHeaders() as $item) {
-            $customHeaders[$item[0]] = $item[1];
+            $request['headers'][$item[0]] = $item[1];
         }
 
-        if (count($customHeaders) > 0) {
-            $request['headers'] = json_encode($customHeaders);
-        }
-
-        foreach ($phplistmailer->getAttachments() as $item) {
+        foreach ($phplistmailer->getAttachments() as $i => $item) {
             list($content, $filename, $name, $encoding, $type, $isString, $disposition, $cid) = $item;
-            $key = sprintf('files[%s]', $name);
-            $request[$key] = $content;
+            $request['attachments'][$i] = [
+                'content' => base64_encode($content),
+                'type' => $type,
+                'filename' => $filename,
+                'disposition' => $disposition,
+            ];
 
             if ($disposition == 'inline') {
-                $key = sprintf('content[%s]', $name);
-                $request[$key] = $cid;
+                $request['attachments'][$i]['content_id'] = $cid;
             }
         }
 
-        return $request;
+        return json_encode($request);
     }
 
     public function httpHeaders()
     {
         return [
             'Authorization: Bearer ' . $this->apiKey,
+            'Content-Type: application/json',
         ];
     }
 
     public function endpoint()
     {
-        return 'https://api.sendgrid.com/api/mail.send.json';
+        return 'https://api.sendgrid.com/v3/mail/send';
     }
 
     public function verifyResponse($response)
     {
-        $result = json_decode($response);
-
-        return $result !== null && $result->message === 'success';
+        return true;
     }
 }
