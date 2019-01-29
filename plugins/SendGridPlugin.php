@@ -52,6 +52,7 @@ class SendGridPlugin extends phplistPlugin implements EmailSender
             'category' => 'Sendgrid',
         ),
     );
+    public $remotePages = array('webhook');
 
     /**
      * Constructor.
