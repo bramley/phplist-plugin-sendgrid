@@ -106,4 +106,17 @@ class SendGridPlugin extends phplistPlugin implements EmailSender
 
         return $this->mailSender->send($phplistmailer, $headers, $body);
     }
+
+    /**
+     * This hook is called within the processqueue shutdown() function.
+     *
+     * For command line processqueue phplist exits in its shutdown function
+     * therefore need to explicitly call the mailsender shutdown method.
+     */
+    public function processSendStats($sent = 0, $invalid = 0, $failed_sent = 0, $unconfirmed = 0, $counters = array())
+    {
+        if ($this->mailSender !== null) {
+            $this->mailSender->shutdown();
+        }
+    }
 }

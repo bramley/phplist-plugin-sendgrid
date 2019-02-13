@@ -47,6 +47,7 @@ This plugin is free but if you install and find it useful then a donation to sup
 ## Version history ##
 
     version     Description
+    1.3.1+20190213  Ensure that multi-curl calls are completed
     1.3.0+20190129  Use the SendGrid Web API v3
     1.2.0+20181130  Use the phpList\plugin\Common\MailSender class to send emails
     1.1.0+20170213  Integrate with phplist 3.3.0 to send emails
