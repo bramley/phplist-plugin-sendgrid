@@ -38,6 +38,7 @@ This plugin is free but if you install and find it useful then a donation to sup
 ## Version history ##
 
     version     Description
+    1.4.1+20220214  Handle unsubscribe events in the webhook
     1.4.0+20220214  Add webhook to process bounces
     1.3.1+20190213  Ensure that multi-curl calls are completed
     1.3.0+20190129  Use the SendGrid Web API v3

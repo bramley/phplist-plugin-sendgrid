@@ -1,3 +1,6 @@
+version 1.4.1+20220214
+      Handle unsubscribe events in the webhook.
+
 version 1.4.0+20220214
       Add webhook to process bounces
 

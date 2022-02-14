@@ -29,8 +29,9 @@ class WebhookHandler
         }
         $logger->debug(print_r($events, true));
         $bounceCount = 0;
-        $spamCount = 0;
         $droppedCount = 0;
+        $spamCount = 0;
+        $unsubscribeCount = 0;
         $unknownCount = 0;
         $unhandledEventCount = 0;
 
@@ -47,24 +48,28 @@ class WebhookHandler
                     ++$bounceCount;
                     addUserToBlackList($email, "SendGrid bounce $e->reason $e->status");
                     break;
+                case 'dropped':
+                    ++$droppedCount;
+                    addUserToBlackList($email, "SendGrid dropped $e->reason $e->status");
+                    break;
                 case 'spamreport':
                     ++$spamCount;
                     addUserToBlackList($email, 'SendGrid spam report');
                     break;
-                case 'dropped':
-                    ++$droppedCount;
-                    $reason = $e->reason;
-                    addUserToBlackList($email, "SendGrid dropped $e->reason $e->status");
+                case 'unsubscribe':
+                    ++$unsubscribeCount;
+                    addUserToBlackList($email, 'SendGrid unsubscribe');
                     break;
                 default:
                     ++$unhandledEventCount;
             }
         }
         $event = sprintf(
-            'SendGrid - bounces: %d, spam reports: %d, dropped: %d, unknown: %d, unhandled events: %d',
+            'SendGrid - bounces: %d, spam reports: %d, dropped: %d, unsubscribe: %d, unknown: %d, unhandled events: %d',
             $bounceCount,
             $spamCount,
             $droppedCount,
+            $unsubscribeCount,
             $unknownCount,
             $unhandledEventCount
         );
