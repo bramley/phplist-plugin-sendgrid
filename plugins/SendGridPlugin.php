@@ -73,18 +73,13 @@ class SendGridPlugin extends phplistPlugin implements EmailSender
      */
     public function dependencyCheck()
     {
-        global $emailsenderplugin, $plugins;
+        global $emailsenderplugin;
 
-        return array(
-            'Common Plugin v3.9.8 or later installed' => (
-                phpListPlugin::isEnabled('CommonPlugin')
-                && version_compare($plugins['CommonPlugin']->version, '3.9.8') >= 0
-            ),
-            'PHP version 5.4.0 or greater' => version_compare(PHP_VERSION, '5.4') > 0,
-            'phpList version 3.3.0 or greater' => version_compare(getConfig('version'), '3.3') > 0,
+        return [
+            'Common Plugin must be enabled' => phpListPlugin::isEnabled('CommonPlugin'),
             'No other plugin to send emails can be enabled' => empty($emailsenderplugin) || get_class($emailsenderplugin) == __CLASS__,
             'curl extension installed' => extension_loaded('curl'),
-        );
+        ];
     }
 
     /**
