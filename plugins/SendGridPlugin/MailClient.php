@@ -77,6 +77,11 @@ class MailClient implements \phpList\plugin\Common\IMailClient
             ];
         }
 
+        if ($replyToAddresses = $phplistmailer->getReplyToAddresses()) {
+            $replyTo = reset($replyToAddresses);
+            $request['reply_to'] = ['email' => $replyTo[0], 'name' => $replyTo[1]];
+        }
+
         foreach ($phplistmailer->getCustomHeaders() as $item) {
             $request['headers'][$item[0]] = $item[1];
         }
@@ -94,6 +99,7 @@ class MailClient implements \phpList\plugin\Common\IMailClient
                 $request['attachments'][$i]['content_id'] = $cid;
             }
         }
+        \phpList\plugin\Common\Logger::instance()->debug('request', $request);
 
         return json_encode($request);
     }
