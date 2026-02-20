@@ -42,6 +42,21 @@ class MailClient implements \phpList\plugin\Common\IMailClient
         $this->apiKey = $apiKey;
     }
 
+    public function setReplyTo()
+    {
+      $messageId = (int)$_GET['id'];
+      $messagedata = loadMessageData($messageId);
+
+      // parse the reply field into email and name components
+      if (preg_match('/([^ ]+@[^ ]+)/', $messagedata['replyto'], $regs)) {
+        $replytodata = [];
+        // if there is an email in the from, rewrite it as "name <email>"
+        $replytodata['name'] = str_replace($regs[0], '', $messagedata['replyto']);
+        $replytodata['email'] = $regs[0];
+      }
+      return $replytodata;
+    }
+
     public function requestBody(\PHPlistMailer $phplistmailer, $headers, $body)
     {
         $to = $phplistmailer->getToAddresses();
@@ -55,6 +70,18 @@ class MailClient implements \phpList\plugin\Common\IMailClient
             'email' => $phplistmailer->From,
             'name' => $phplistmailer->FromName,
         ];
+
+        if (USE_REPLY_TO) {
+          $replytodata = $this->setReplyTo();
+
+          if(!empty($replytodata)) {
+            $request['reply_to'] = [
+                'email' => $replytodata['email'],
+                'name' => $replytodata['name'],
+            ];
+          }
+        }
+        
         /*
          * for an html message both Body and AltBody will be populated
          * for a plain text message only Body will be populated
