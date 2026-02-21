@@ -1,3 +1,8 @@
+version 1.4.2+20260221
+      Remove obsolete dependencies
+      Add reply to
+      PHP CS Fixer changes
+
 version 1.4.1+20220214
       Handle unsubscribe events in the webhook.
 

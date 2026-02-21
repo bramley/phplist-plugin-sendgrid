@@ -8,7 +8,7 @@ This plugin sends emails through SendGrid using their API.
 
 ### Dependencies ###
 
-This plugin is for phplist 3.3.2 or later and requires php version 5.6 or later.
+This plugin is for phplist 3.3.2 or later.
 
 It also requires CommonPlugin version to be enabled, and the php curl extension to be installed.
 
@@ -21,7 +21,7 @@ The installation should create
 * the file SendGridPlugin.php
 * the directory SendGridPlugin
 
-##Usage##
+## Usage ##
 
 For guidance on using the plugin see the plugin's page within the phplist documentation site <https://resources.phplist.com/plugin/sendgrid>
 
@@ -38,6 +38,7 @@ This plugin is free but if you install and find it useful then a donation to sup
 ## Version history ##
 
     version     Description
+    1.4.2+20260221  Add Reply-To address
     1.4.1+20220214  Handle unsubscribe events in the webhook
     1.4.0+20220214  Add webhook to process bounces
     1.3.1+20190213  Ensure that multi-curl calls are completed

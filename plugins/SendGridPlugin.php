@@ -20,7 +20,7 @@
  * @license   http://www.gnu.org/licenses/gpl.html GNU General Public License, Version 3
  */
 
-/**
+/*
  * Registers the plugin with phplist.
  */
 if (!interface_exists('EmailSender')) {
@@ -59,7 +59,7 @@ class SendGridPlugin extends phplistPlugin implements EmailSender
      */
     public function __construct()
     {
-        $this->coderoot = dirname(__FILE__) . '/' . 'SendGridPlugin' . '/';
+        $this->coderoot = dirname(__FILE__) . '/SendGridPlugin/';
         parent::__construct();
         $this->version = (is_file($f = $this->coderoot . self::VERSION_FILE))
             ? file_get_contents($f)
